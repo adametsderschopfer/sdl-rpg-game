@@ -1,7 +1,9 @@
 #include "Game.h"
 
-Game::Game() {
+SDL_Texture *playerTexture;
+SDL_FRect *srcRect, *destRect = new SDL_FRect(0,0,0,0);
 
+Game::Game() {
 }
 
 Game::~Game() {
@@ -9,7 +11,7 @@ Game::~Game() {
 }
 
 bool Game::init(const char *title, int width, int height, bool fullScreen) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("SDL_Init(SDL_INIT_VIDEO) failed (%s)", SDL_GetError());
         return false;
     }
@@ -36,6 +38,11 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
+
+    SDL_Surface *tmpSurface = IMG_Load("assets/player.jpg");
+    playerTexture = SDL_CreateTextureFromSurface(m_renderer, tmpSurface);
+    SDL_DestroySurface(tmpSurface);
+
     m_isRunning = true;
     return true;
 }
@@ -56,13 +63,18 @@ void Game::handleEvents() {
 
 void Game::update() {
     // todo: update here
+
+    destRect->h = 32;
+    destRect->w = 32;
 }
 
 void Game::render() {
     SDL_RenderClear(m_renderer);
-    SDL_RenderPresent(m_renderer);
 
-    // todo: render here
+    // todo: render& here
+    SDL_RenderTexture(m_renderer, playerTexture, nullptr, destRect);
+
+    SDL_RenderPresent(m_renderer);
 }
 
 void Game::destroy() {
