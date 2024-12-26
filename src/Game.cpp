@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Manager/TextureManager.h"
 
 SDL_Texture *playerTexture;
 SDL_FRect *srcRect, *destRect = new SDL_FRect(0,0,0,0);
@@ -38,10 +39,11 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
+    /** EX*/
 
-    SDL_Surface *tmpSurface = IMG_Load("assets/player.jpg");
-    playerTexture = SDL_CreateTextureFromSurface(m_renderer, tmpSurface);
-    SDL_DestroySurface(tmpSurface);
+    playerTexture = Manager::TextureManager::LoadTexture("assets/player.jpg", m_renderer);
+
+    /** EX*/
 
     m_isRunning = true;
     return true;
@@ -64,15 +66,22 @@ void Game::handleEvents() {
 void Game::update() {
     // todo: update here
 
+    /** EX*/
+
     destRect->h = 32;
     destRect->w = 32;
+
+    /** EX*/
 }
 
 void Game::render() {
     SDL_RenderClear(m_renderer);
 
-    // todo: render& here
+    /** EX*/
+
     SDL_RenderTexture(m_renderer, playerTexture, nullptr, destRect);
+
+    /** EX*/
 
     SDL_RenderPresent(m_renderer);
 }
