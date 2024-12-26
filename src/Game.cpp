@@ -14,7 +14,6 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
         return false;
     }
 
-
     int flags = 0;
 
     if (fullScreen) {

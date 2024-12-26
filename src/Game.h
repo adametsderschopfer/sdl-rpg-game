@@ -2,7 +2,6 @@
 #include "SDL3_image/SDL_image.h"
 #include "iostream"
 
-d
 class Game {
 public:
     Game();
