@@ -6,9 +6,7 @@
 #include "iostream"
 #include "memory"
 
-namespace Manager {
-    class TextureManager {
-    public:
-        static SDL_Texture *LoadTexture(const std::string &texturePath, SDL_Renderer *renderer);
-    };
-}
+class TextureManager {
+public:
+    static SDL_Texture *LoadTexture(const std::string &texturePath, SDL_Renderer *renderer);
+};

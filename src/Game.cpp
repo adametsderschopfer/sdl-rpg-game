@@ -1,8 +1,8 @@
 #include "Game.h"
-#include "Manager/TextureManager.h"
+#include "Core/GameObject/GameObject.h"
+#include "memory"
 
-SDL_Texture *playerTexture;
-SDL_FRect *srcRect, *destRect = new SDL_FRect(0,0,0,0);
+std::shared_ptr<GameObject> player;
 
 Game::Game() {
 }
@@ -40,9 +40,7 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
     /** EX*/
-
-    playerTexture = Manager::TextureManager::LoadTexture("assets/player.jpg", m_renderer);
-
+    player = std::make_shared<GameObject>("assets/player.png", m_renderer, glm::vec2(1, 1));
     /** EX*/
 
     m_isRunning = true;
@@ -64,24 +62,17 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    // todo: update here
-
-    /** EX*/
-
-    destRect->h = 32;
-    destRect->w = 32;
-
-    /** EX*/
+    /** EX */
+    player->update();
+    /** EX */
 }
 
 void Game::render() {
     SDL_RenderClear(m_renderer);
 
-    /** EX*/
-
-    SDL_RenderTexture(m_renderer, playerTexture, nullptr, destRect);
-
-    /** EX*/
+    /** EX */
+    player->render();
+    /** EX */
 
     SDL_RenderPresent(m_renderer);
 }
