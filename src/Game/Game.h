@@ -2,14 +2,10 @@
 
 #include "SDL3/SDL.h"
 #include "SDL3_image/SDL_image.h"
-#include "iostream"
+#include "string"
 
 class Game {
 public:
-    Game();
-
-    ~Game();
-
     bool init(
             const char *title,
             int width,
@@ -27,6 +23,9 @@ public:
 
     [[nodiscard]]
     bool isRunning() const { return m_isRunning; }
+
+    static SDL_Renderer *renderer;
+    static SDL_Event event;
 
 private:
     bool m_isRunning;

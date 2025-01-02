@@ -1,12 +1,10 @@
 #pragma once
 
-#include "SDL3/SDL.h"
-#include "SDL3_image/SDL_image.h"
-
-#include "iostream"
-#include "memory"
+#include "../Game/Game.h"
 
 class TextureManager {
 public:
-    static SDL_Texture *LoadTexture(const std::string &texturePath, SDL_Renderer *renderer);
+    static SDL_Texture *loadTexture(const std::string &texturePath);
+
+    static void draw(SDL_Texture *texture, SDL_FRect destRect);
 };
