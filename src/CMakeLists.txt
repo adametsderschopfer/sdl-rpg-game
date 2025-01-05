@@ -16,6 +16,9 @@ add_executable(${PROJECT_NAME}
         Core/ECS/ColliderComponent.h
         Core/Collision.h
         Core/Collision.cpp
+        Core/ECS/TileComponent.h
+        Core/ECS/ECS.cpp
+        Core/ECS/Animation.h
 )
 target_sources(${PROJECT_NAME} PRIVATE main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE vendor)

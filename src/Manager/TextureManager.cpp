@@ -17,6 +17,11 @@ SDL_Texture *TextureManager::loadTexture(const std::string &texturePath) {
     return rawTexture;
 }
 
-void TextureManager::draw(SDL_Texture *texture, SDL_FRect destRect) {
-    SDL_RenderTexture(Game::renderer, texture, nullptr, &destRect);
+void TextureManager::draw(SDL_Texture *texture, const SDL_FRect *srcRect, const SDL_FRect *destRect) {
+    SDL_RenderTexture(Game::renderer, texture, srcRect, destRect);
+}
+
+void
+TextureManager::draw(SDL_Texture *texture, const SDL_FRect *srcRect, const SDL_FRect *destRect, SDL_FlipMode flip) {
+    SDL_RenderTextureRotated(Game::renderer, texture, srcRect, destRect, 0, nullptr, flip);
 }

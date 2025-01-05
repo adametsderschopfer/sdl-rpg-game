@@ -25,8 +25,7 @@ public:
     }
 
     void init() override {
-        m_velocity.x = 0;
-        m_velocity.y = 0;
+        m_velocity = glm::vec2(0);
     }
 
     void update() override {

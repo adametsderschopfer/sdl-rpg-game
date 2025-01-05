@@ -17,6 +17,8 @@ public:
         }
 
         m_transform = &entity->getComponent<TransformComponent>();
+
+        Game::colliders.push_back(this);
     }
 
     void update() override {
@@ -30,6 +32,8 @@ public:
     [[nodiscard]] const SDL_FRect &getCollider() const {
         return m_collider;
     }
+
+    [[nodiscard]] const std::string &getTag() const { return m_tag; }
 
 private:
     SDL_FRect m_collider{};

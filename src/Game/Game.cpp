@@ -1,18 +1,17 @@
 #include "Game.h"
-#include "memory"
 #include "Map.h"
 
 #include "../Core/ECS/Components.h"
 #include "../Core/Collision.h"
 
-std::shared_ptr<Map> testMap;
-
+/* DEVELOPMENT ... */
 EntityManager entityManager;
 auto &playerEntity(entityManager.addEntity());
-auto &wallEntity(entityManager.addEntity());
+/* DEVELOPMENT ... */
 
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
+std::vector<ColliderComponent *> Game::colliders;
 
 bool Game::init(const char *title, int width, int height, bool fullScreen) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -42,20 +41,15 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 
     SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-    /** EX*/
-    testMap = std::make_shared<Map>();
-
+    /* DEVELOPMENT ... */
     playerEntity.addComponent<TransformComponent>(glm::vec2(100, 500));
-    playerEntity.addComponent<SpriteComponent>("assets/player.png");
+    playerEntity.addComponent<SpriteComponent>("assets/player_anims.png", true);
     playerEntity.addComponent<PlayerController>();
     playerEntity.addComponent<ColliderComponent>("Player");
+    playerEntity.addGroup(groupPlayers);
 
-    wallEntity.addComponent<TransformComponent>(glm::vec2(200, 300), 150.f, 75.f);
-    wallEntity.addComponent<SpriteComponent>("assets/dirt.jpg");
-    wallEntity.addComponent<ColliderComponent>("wall");
-
-
-    /** EX*/
+    Map::loadMap("assets/map_test.csv", glm::vec2(30, 10));
+    /* DEVELOPMENT ... */
 
     m_isRunning = true;
     return true;
@@ -75,23 +69,32 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    /** EX */
+    entityManager.refresh();
     entityManager.update();
 
-    if (Collision::AABB(playerEntity.getComponent<ColliderComponent>().getCollider(), wallEntity.getComponent<ColliderComponent>().getCollider())) {
-        std::cout << "wall hit!" << std::endl;
+    for (const auto &_collider: colliders) {
+        Collision::AABB(playerEntity.getComponent<ColliderComponent>(), *_collider);
     }
-
-    /** EX */
 }
+
+auto &tiles(entityManager.getGroup(groupMap));
+auto &players(entityManager.getGroup(groupPlayers));
+auto &enemies(entityManager.getGroup(groupEnemies));
 
 void Game::render() {
     SDL_RenderClear(Game::renderer);
 
-    /** EX */
-    testMap->drawMap();
-    entityManager.draw();
-    /** EX */
+    for (const auto &tile: tiles) {
+        tile->draw();
+    }
+
+    for (const auto &enemy: enemies) {
+        enemy->draw();
+    }
+
+    for (const auto &player: players) {
+        player->draw();
+    }
 
     SDL_RenderPresent(Game::renderer);
 }
@@ -100,4 +103,10 @@ void Game::destroy() {
     SDL_DestroyWindow(m_window);
     SDL_DestroyRenderer(Game::renderer);
     SDL_Quit();
+}
+
+void Game::addTile(glm::vec2 source, glm::vec2 position) {
+    auto &tile(entityManager.addEntity());
+    tile.addComponent<TileComponent>(source, position, "assets/map_ss.png"); // todo magic number
+    tile.addGroup(groupMap);
 }

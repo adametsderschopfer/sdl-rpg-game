@@ -3,6 +3,16 @@
 #include "SDL3/SDL.h"
 #include "SDL3_image/SDL_image.h"
 #include "string"
+#include "glm/vec2.hpp"
+
+class ColliderComponent;
+
+enum groupLabels : std::size_t {
+    groupMap,
+    groupPlayers,
+    groupEnemies,
+    groupColliders
+};
 
 class Game {
 public:
@@ -24,8 +34,11 @@ public:
     [[nodiscard]]
     bool isRunning() const { return m_isRunning; }
 
+    static void addTile(glm::vec2 source, glm::vec2 position);
+
     static SDL_Renderer *renderer;
     static SDL_Event event;
+    static std::vector<ColliderComponent *> colliders;
 
 private:
     bool m_isRunning;

@@ -1,4 +1,7 @@
-#include "Game.h"
+#pragma once
+
+#include "string"
+#include "glm/vec2.hpp"
 
 class Map {
 public:
@@ -6,16 +9,5 @@ public:
 
     ~Map();
 
-    void loadMap(int loadMap[20][25]);
-
-    void drawMap();
-
-private:
-    SDL_FRect m_destRect;
-
-    SDL_Texture *m_dirt;
-    SDL_Texture *m_grass;
-    SDL_Texture *m_water;
-
-    int m_map[20][25];
+    static void loadMap(const std::string &path, glm::ivec2 size);
 };

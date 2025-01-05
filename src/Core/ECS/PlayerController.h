@@ -10,6 +10,7 @@ class PlayerController : public Component {
 public:
     void init() override {
         m_transform = &entity->getComponent<TransformComponent>();
+        m_sprite = &entity->getComponent<SpriteComponent>();
     }
 
     void update() override {
@@ -29,11 +30,16 @@ public:
 
         if (Game::event.type == SDL_EVENT_KEY_DOWN) {
             m_transform->setVelocity(velocityActive);
+            m_sprite->play("Walk");
+            m_sprite->setSpriteFlip(SDL_FLIP_HORIZONTAL);
         } else if (Game::event.type == SDL_EVENT_KEY_UP) {
             m_transform->setVelocity(velocityNonActive);
+            m_sprite->play("Idle");
+            m_sprite->setSpriteFlip(SDL_FLIP_NONE);
         }
     }
 
 private:
     TransformComponent *m_transform{};
+    SpriteComponent *m_sprite{};
 };
