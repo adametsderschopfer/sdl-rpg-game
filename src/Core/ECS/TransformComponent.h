@@ -8,6 +8,15 @@ class TransformComponent : public Component {
 public:
     explicit TransformComponent() = default;
 
+    explicit TransformComponent(float _scale) {
+        // todo magic numbers
+        m_position.x = 400;
+        m_position.y = 320;
+
+        m_scale.x = _scale;
+        m_scale.y = _scale;
+    }
+
     explicit TransformComponent(glm::vec2 _pos) {
         m_position = glm::vec2(_pos);
     }

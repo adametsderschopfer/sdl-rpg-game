@@ -11,11 +11,11 @@ int main(int argc, char *argv[]) {
 
     g_game = new Game();
 
-    if (!g_game->init("sdl_rpg_game", 1280, 720, false)) {
+    if (!g_game->init("sdl_rpg_game", 800, 640, false)) {
         return -1;
     }
 
-    while (g_game->isRunning()) {
+    while (Game::isRunning) {
         frameStart = SDL_GetTicks();
 
         g_game->handleEvents();

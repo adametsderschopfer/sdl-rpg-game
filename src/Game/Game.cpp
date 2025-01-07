@@ -4,14 +4,15 @@
 #include "../Core/ECS/Components.h"
 #include "../Core/Collision.h"
 
-/* DEVELOPMENT ... */
+Map* map;
+
 EntityManager entityManager;
 auto &playerEntity(entityManager.addEntity());
-/* DEVELOPMENT ... */
 
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
-std::vector<ColliderComponent *> Game::colliders;
+SDL_FRect Game::camera = {0,0,800,640};
+bool Game::isRunning = false;
 
 bool Game::init(const char *title, int width, int height, bool fullScreen) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -42,25 +43,32 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
     SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
     /* DEVELOPMENT ... */
-    playerEntity.addComponent<TransformComponent>(glm::vec2(100, 500));
+
+	map = new Map("assets/terrain_ss.png", 32.f, 2.f);
+    map->loadMap("assets/map.map", glm::ivec2(25, 20));
+
+    playerEntity.addComponent<TransformComponent>(2.f);
     playerEntity.addComponent<SpriteComponent>("assets/player_anims.png", true);
     playerEntity.addComponent<PlayerController>();
     playerEntity.addComponent<ColliderComponent>("Player");
     playerEntity.addGroup(groupPlayers);
 
-    Map::loadMap("assets/map_test.csv", glm::vec2(30, 10));
     /* DEVELOPMENT ... */
 
-    m_isRunning = true;
+    isRunning = true;
     return true;
 }
+
+auto &tiles(entityManager.getGroup(groupMap));
+auto &players(entityManager.getGroup(groupPlayers));
+auto &colliders(entityManager.getGroup(groupColliders));
 
 void Game::handleEvents() {
     SDL_PollEvent(&event);
 
     switch (event.type) {
         case SDL_EVENT_QUIT:
-            m_isRunning = false;
+            isRunning = false;
             break;
 
         default:
@@ -69,30 +77,53 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+    TransformComponent *pTrs = &playerEntity.getComponent<TransformComponent>();
+    SDL_FRect playerCol = playerEntity.getComponent<ColliderComponent>().getCollider();
+    glm::vec2 playerPos = pTrs->getPosition();
+
     entityManager.refresh();
     entityManager.update();
 
-    for (const auto &_collider: colliders) {
-        Collision::AABB(playerEntity.getComponent<ColliderComponent>(), *_collider);
+    for (const auto &collider: colliders) {
+        SDL_FRect cCol = collider->getComponent<ColliderComponent>().getCollider();
+        if (Collision::AABB(cCol, playerCol)) {
+            pTrs->setPosition(playerPos);
+        }
+    }
+
+    // Todo: camera class
+    camera.x = pTrs->getPosition().x - 400;
+    camera.y = pTrs->getPosition().y - 320;
+
+    if (camera.x < 0) {
+        camera.x = 0;
+    }
+
+    if (camera.y < 0) {
+        camera.y = 0;
+    }
+
+    if (camera.x > camera.w) {
+        camera.x = camera.w;
+    }
+
+    if (camera.y > camera.h) {
+        camera.y = camera.h;
     }
 }
-
-auto &tiles(entityManager.getGroup(groupMap));
-auto &players(entityManager.getGroup(groupPlayers));
-auto &enemies(entityManager.getGroup(groupEnemies));
 
 void Game::render() {
     SDL_RenderClear(Game::renderer);
 
-    for (const auto &tile: tiles) {
+    for (auto &tile: tiles) {
         tile->draw();
     }
 
-    for (const auto &enemy: enemies) {
-        enemy->draw();
+    for (auto &c: colliders) {
+        c->draw();
     }
 
-    for (const auto &player: players) {
+    for (auto &player: players) {
         player->draw();
     }
 
@@ -103,10 +134,4 @@ void Game::destroy() {
     SDL_DestroyWindow(m_window);
     SDL_DestroyRenderer(Game::renderer);
     SDL_Quit();
-}
-
-void Game::addTile(glm::vec2 source, glm::vec2 position) {
-    auto &tile(entityManager.addEntity());
-    tile.addComponent<TileComponent>(source, position, "assets/map_ss.png"); // todo magic number
-    tile.addGroup(groupMap);
 }

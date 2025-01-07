@@ -10,7 +10,6 @@ class ColliderComponent;
 enum groupLabels : std::size_t {
     groupMap,
     groupPlayers,
-    groupEnemies,
     groupColliders
 };
 
@@ -31,18 +30,12 @@ public:
 
     void destroy();
 
-    [[nodiscard]]
-    bool isRunning() const { return m_isRunning; }
-
-    static void addTile(glm::vec2 source, glm::vec2 position);
-
     static SDL_Renderer *renderer;
     static SDL_Event event;
-    static std::vector<ColliderComponent *> colliders;
 
+    static bool isRunning;
+
+    static SDL_FRect camera;
 private:
-    bool m_isRunning;
-
     SDL_Window *m_window;
-    SDL_Renderer *m_renderer;
 };

@@ -56,15 +56,15 @@ public:
 
         m_srcRect.y = (float)m_animIndex * m_transform->getHeight();
 
-        m_destRect.x = m_transform->getPosition().x;
-        m_destRect.y = m_transform->getPosition().y;
+        m_destRect.x = m_transform->getPosition().x - Game::camera.x;
+        m_destRect.y = m_transform->getPosition().y - Game::camera.y;
 
         m_destRect.w = m_transform->getScaledWidth();
         m_destRect.h = m_transform->getScaledHeight();
     }
 
     void draw() override {
-        TextureManager::draw(m_texture, &m_srcRect, &m_destRect, m_spriteFlip);
+        TextureManager::draw(m_texture, m_srcRect, m_destRect, m_spriteFlip);
     }
 
     void setTexture(const std::string &path) {
@@ -79,8 +79,7 @@ private:
     TransformComponent *m_transform{};
 
     SDL_Texture *m_texture{};
-    SDL_FRect m_destRect{};
-    SDL_FRect m_srcRect{};
+    SDL_FRect m_destRect{}, m_srcRect{};
 
     int m_animIndex = 0;
     std::map<const std::string, Animation> animations;

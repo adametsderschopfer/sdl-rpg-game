@@ -17,14 +17,15 @@ using ComponentId = std::size_t;
 using Group = std::size_t;
 
 inline ComponentId getNewComponentTypeId() {
-    static ComponentId lastId = 0;
+    static ComponentId lastId = 0u;
     return lastId++;
 }
 
 template<typename T>
 inline ComponentId getComponentTypeId() noexcept {
-    static ComponentId typeId = getNewComponentTypeId();
-    return typeId;
+    static_assert (std::is_base_of<Component, T>::value, "");
+    static ComponentId typeID = getNewComponentTypeId();
+    return typeID;
 }
 
 constexpr std::size_t maxComponents = 32;
@@ -72,9 +73,9 @@ public:
 
     template<typename T, typename ...TArgs>
     T &addComponent(TArgs &&... mArgs) {
-        T *c(new T(std::forward<TArgs>(mArgs)...));
+        T* c(new T(std::forward<TArgs>(mArgs)...));
         c->entity = this;
-        std::unique_ptr<Component> uPtr{c};
+        std::unique_ptr<Component>uPtr { c };
         m_components.emplace_back(std::move(uPtr));
 
         m_componentArray[getComponentTypeId<T>()] = c;
