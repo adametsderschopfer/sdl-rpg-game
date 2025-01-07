@@ -2,15 +2,14 @@
 
 #include "ECS.h"
 #include "TransformComponent.h"
-#include "TransformComponent.h"
 #include "SDL3/SDL.h"
 
 class TileComponent : public Component {
 public:
     TileComponent() = default;
 
-    TileComponent(glm::vec2 source, glm::vec2 position, float tSize, float tScale, const std::string &path) {
-        m_texture = TextureManager::loadTexture(path);
+    TileComponent(glm::vec2 source, glm::vec2 position, float tSize, float tScale, const std::string &textureId) {
+        m_texture = Game::assetsManager->getTexture(textureId);
 
         m_position = position;
 

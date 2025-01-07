@@ -4,15 +4,17 @@
 #include "../Core/ECS/Components.h"
 #include "../Core/Collision.h"
 
-Map* map;
-
+Map *map;
 EntityManager entityManager;
+
 auto &playerEntity(entityManager.addEntity());
 
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
-SDL_FRect Game::camera = {0,0,800,640};
+SDL_FRect Game::camera = {0, 0, 800, 640};
 bool Game::isRunning = false;
+
+AssetsManager *Game::assetsManager = new AssetsManager(&entityManager);
 
 bool Game::init(const char *title, int width, int height, bool fullScreen) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -42,18 +44,19 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 
     SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-    /* DEVELOPMENT ... */
+    assetsManager->addTexture("terrain", "assets/terrain_ss.png");
+    assetsManager->addTexture("player", "assets/player_anims.png");
 
-	map = new Map("assets/terrain_ss.png", 32.f, 2.f);
+    map = new Map("terrain", 32.f, 2.f);
     map->loadMap("assets/map.map", glm::ivec2(25, 20));
 
+
     playerEntity.addComponent<TransformComponent>(2.f);
-    playerEntity.addComponent<SpriteComponent>("assets/player_anims.png", true);
+    playerEntity.addComponent<SpriteComponent>("player", true);
     playerEntity.addComponent<PlayerController>();
     playerEntity.addComponent<ColliderComponent>("Player");
     playerEntity.addGroup(groupPlayers);
 
-    /* DEVELOPMENT ... */
 
     isRunning = true;
     return true;

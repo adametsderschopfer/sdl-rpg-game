@@ -8,8 +8,8 @@
 
 extern EntityManager entityManager;
 
-Map::Map(std::string mapTexturePath, float tileSize, float mapScale)
-        : m_mapTexturePath(std::move(mapTexturePath)),
+Map::Map(std::string textureId, float tileSize, float mapScale)
+        : m_textureId(std::move(textureId)),
           m_mapScale(mapScale),
           m_tileSize(tileSize) {
 
@@ -62,6 +62,6 @@ void Map::loadMap(const std::string &path, glm::ivec2 size) {
 
 void Map::addTile(glm::vec2 source, glm::vec2 position) {
     auto &tile(entityManager.addEntity());
-    tile.addComponent<TileComponent>(source, position, m_tileSize, m_mapScale, m_mapTexturePath);
+    tile.addComponent<TileComponent>(source, position, m_tileSize, m_mapScale, m_textureId);
     tile.addGroup(groupMap);
 }

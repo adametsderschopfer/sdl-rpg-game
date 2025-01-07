@@ -6,6 +6,7 @@
 #include "glm/vec2.hpp"
 
 class ColliderComponent;
+class AssetsManager;
 
 enum groupLabels : std::size_t {
     groupMap,
@@ -32,10 +33,10 @@ public:
 
     static SDL_Renderer *renderer;
     static SDL_Event event;
-
     static bool isRunning;
-
     static SDL_FRect camera;
+    static AssetsManager *assetsManager;
+
 private:
     SDL_Window *m_window;
 };

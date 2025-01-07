@@ -8,16 +8,17 @@
 
 #include "SDL3/SDL.h"
 #include "../../Manager/TextureManager.h"
+#include "../../Manager/AssetsManager.h"
 
 class SpriteComponent : public Component {
 public:
     SpriteComponent() = default;
 
-    explicit SpriteComponent(const std::string &path) {
-        setTexture(path);
+    explicit SpriteComponent(const std::string &textureId) {
+        m_texture = Game::assetsManager->getTexture(textureId);
     };
 
-    explicit SpriteComponent(const std::string &path, bool isAnimated) {
+    explicit SpriteComponent(const std::string &textureId, bool isAnimated) {
         m_animated = isAnimated;
 
         Animation idle = Animation(0, 3, 100);
@@ -28,7 +29,7 @@ public:
 
         play("Idle");
 
-        setTexture(path);
+        m_texture = Game::assetsManager->getTexture(textureId);
     };
 
     ~SpriteComponent() {
@@ -65,10 +66,6 @@ public:
 
     void draw() override {
         TextureManager::draw(m_texture, m_srcRect, m_destRect, m_spriteFlip);
-    }
-
-    void setTexture(const std::string &path) {
-        m_texture = TextureManager::loadTexture(path);
     }
 
     void setSpriteFlip(SDL_FlipMode mSpriteFlip) {
