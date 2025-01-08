@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
         Core/ECS/Animation.h
         Manager/AssetsManager.cpp
         Manager/AssetsManager.h
+        Core/ECS/ProjectileComponent.h
 )
 target_sources(${PROJECT_NAME} PRIVATE main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE vendor)

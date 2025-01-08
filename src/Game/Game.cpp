@@ -1,8 +1,9 @@
 #include "Game.h"
 #include "Map.h"
 
-#include "../Core/ECS/Components.h"
+#include "../Manager/AssetsManager.h"
 #include "../Core/Collision.h"
+#include "../Core/ECS/Components.h"
 
 Map *map;
 EntityManager entityManager;
@@ -46,10 +47,10 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 
     assetsManager->addTexture("terrain", "assets/terrain_ss.png");
     assetsManager->addTexture("player", "assets/player_anims.png");
+    assetsManager->addTexture("projectile", "assets/proj.png");
 
     map = new Map("terrain", 32.f, 2.f);
     map->loadMap("assets/map.map", glm::ivec2(25, 20));
-
 
     playerEntity.addComponent<TransformComponent>(2.f);
     playerEntity.addComponent<SpriteComponent>("player", true);
@@ -57,6 +58,7 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
     playerEntity.addComponent<ColliderComponent>("Player");
     playerEntity.addGroup(groupPlayers);
 
+    assetsManager->createProjectTile(glm::vec2(600, 600), 200, 2, glm::vec2(2, 0), "projectile");
 
     isRunning = true;
     return true;
@@ -65,6 +67,7 @@ bool Game::init(const char *title, int width, int height, bool fullScreen) {
 auto &tiles(entityManager.getGroup(groupMap));
 auto &players(entityManager.getGroup(groupPlayers));
 auto &colliders(entityManager.getGroup(groupColliders));
+auto &projectiles(entityManager.getGroup(groupProjectiles));
 
 void Game::handleEvents() {
     SDL_PollEvent(&event);
@@ -91,6 +94,12 @@ void Game::update() {
         SDL_FRect cCol = collider->getComponent<ColliderComponent>().getCollider();
         if (Collision::AABB(cCol, playerCol)) {
             pTrs->setPosition(playerPos);
+        }
+    }
+
+    for (const auto &projectile: projectiles) {
+        if (Collision::AABB(playerCol, projectile->getComponent<ColliderComponent>().getCollider())) {
+            projectile->destroy();
         }
     }
 
@@ -129,6 +138,8 @@ void Game::render() {
     for (auto &player: players) {
         player->draw();
     }
+
+    for (auto &p: projectiles) p->draw();
 
     SDL_RenderPresent(Game::renderer);
 }

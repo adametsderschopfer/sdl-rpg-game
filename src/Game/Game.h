@@ -11,7 +11,8 @@ class AssetsManager;
 enum groupLabels : std::size_t {
     groupMap,
     groupPlayers,
-    groupColliders
+    groupColliders,
+    groupProjectiles
 };
 
 class Game {
